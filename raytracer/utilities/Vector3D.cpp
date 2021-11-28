@@ -1,40 +1,36 @@
 #include "Vector3D.hpp"
+#include "Point3D.hpp"
+#include <sstream>
+#include <cmath>
 
-Vector3D()
+Vector3D::Vector3D()
 {
     x = 0;
     y = 0;
     z = 0;
 }  
 
-Vector3D(double c)
+Vector3D::Vector3D(double c)
 {
     x = c;
     y = c;
     z = c;
 }
-Vector3D(double _x, double _y, double _z)
+Vector3D :: Vector3D(double _x, double _y, double _z)
 {
     x = _x;
     y = _y;
     z = _z;
 }
-Vector3D(const Point3D &p)
+
+Vector3D :: Vector3D(const Point3D &p)
 {
     x = p.x;
     y = p.y;
     z = p.z;
 }
 
-Vector3D &operator=(const Point3D &rhs)
-{
-    x = rhs.x;
-    y = rhs.y;
-    z = rhs.z;
-    return Vector3D(x, y, z);
-}
-
-std::string to_string()
+std::string Vector3D:: to_string() const
 {
     std::stringstream s_x, s_y, s_z;
     s_x << x;
@@ -48,66 +44,78 @@ std::string to_string()
     return str_x + str_y + str_z;
 }
 
-Vector3D operator+(const Vector3D &v) const
+Vector3D& Vector3D::operator=(const Point3D& rhs)
+{
+    x = rhs.x;
+    y = rhs.y;
+    z = rhs.z;
+    return (*this);
+}
+
+Vector3D Vector3D::operator-() const
+{
+    return Vector3D(-x, -y, -z);
+}
+
+Vector3D Vector3D :: operator+(const Vector3D &v) const
 {
     return Vector3D(v.x + x, v.y+y, v.z+z);
 }
 
-Vector3D &operator+=(const Vector3D &v)
+Vector3D& Vector3D::operator+=(const Vector3D& v)
 {
-    v.x = v.x + x;
-    v.y = v.y + y;
-    v.z = v.z + z;
-    return v;
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
 }
 
-Vector3D operator-(const Vector3D &v) const
-{
-    return Vector3D(v.x - x, v.y-y, v.z-z);
+Vector3D Vector3D::operator-(const Vector3D& v) const {
+    return Vector3D(x - v.x, y - v.y, z - v.z);
 }
 
-Vector3D operator-=(const Vector3D &v)
+Vector3D& Vector3D::operator-=(const Vector3D& v)
 {
-    v.x = v.x - x;
-    v.y = v.y - y;
-    v.z = v.z - z;
-    return v;    
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
 }
 
-Vector3D operator*(const double a) const
+Vector3D Vector3D :: operator*(const double a) const
 {
     return Vector3D(x*a, y*a, z*a);
 }
 
-Vector3D operator/(const double a) const
+Vector3D Vector3D :: operator/(const double a) const
 {
     return Vector3D(x/a, y/a, z/a);
 }
 
-void normalize()
+void Vector3D :: normalize()
 {
-    float mag = pow(pow(x, 2) + pow(y, 2) + pow(z, 2), 1/2);
-    x = x/mag;
-    y = y/mag;
-    z = z/mag;
+    double mag = Vector3D::length();
+    this->x /= mag;
+    this->y /= mag;
+    this->z /= mag;
 }
 
-double length() const
+double Vector3D :: length() const
 {
-    return pow(pow(x, 2) + pow(y, 2) + pow(z, 2), 1/2);
+    return std::sqrt(Vector3D::len_squared());
 }
 
-double len_squared() const
+double Vector3D:: len_squared() const
 {
     return pow(x, 2) + pow(y, 2) + pow(z, 2);
 }
 
-double operator*(const Vector3D &b) const
+double Vector3D :: operator*(const Vector3D &b) const
 {
     return (b.x * x) + (b.y * y) + (b.z * z);
 }
 
-Vector3D operator^(const Vector3D &v) const
+Vector3D Vector3D :: operator^(const Vector3D &v) const
 {
     Vector3D vector;
     vector.x = (y * v.z) - (z * v.y);
@@ -118,8 +126,5 @@ Vector3D operator^(const Vector3D &v) const
 
 Vector3D operator*(const double a, const Vector3D &v)
 {
-    v.x = v.x * a;
-    v.y = v.y * a;
-    v.z = v.z * a;
-    return v;
+    return Vector3D(a*v.x, a*v.y, a*v.z);
 }
