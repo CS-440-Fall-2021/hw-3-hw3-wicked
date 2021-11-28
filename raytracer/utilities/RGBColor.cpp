@@ -3,28 +3,18 @@
 #include <sstream>
 #include <cmath>
 
-RGBColor()
-{
-    r = 0;
-    g = 0;
-    b = 0;
-}
+RGBColor::RGBColor():r(0), g(0), b(0) {}
 
-RGBColor(float c)
-{
-    r = c;
-    g = c;
-    b = c;
-}
+RGBColor::RGBColor(float c):r(c), g(c), b(c) {}
 
-RGBColor(float _r, float _g, float _b)
+RGBColor::RGBColor(float _r, float _g, float _b)
 {
     r = _r;
     g = _g;
     b = _b;
 }
 
-std::string to_string()
+std::string RGBColor :: to_string() const
 {
     std::stringstream s_r, s_g, s_b;
     s_r << r;
@@ -39,7 +29,7 @@ std::string to_string()
     
 }
 
-RGBColor operator+(const RGBColor &c) const
+RGBColor RGBColor::operator+(const RGBColor &c) const
 {
     RGBColor temp;
     temp.r = c.r + r;
@@ -48,15 +38,14 @@ RGBColor operator+(const RGBColor &c) const
     return temp;
 }
 
-RGBColor &operator+=(const RGBColor &c)
-{
-    c.r = r + c.r;
-    c.g = g + c.g;
-    c.b = b + c.b;
-    return c
+RGBColor& RGBColor::operator+=(const RGBColor &c){
+    r += c.r;
+    g += c.g;
+    b += c.b;
+    return *this;
 }
 
-RGBColor operator*(const float a) const
+RGBColor RGBColor::operator*(const float a) const
 {
     RGBColor temp;
     temp.r = r * a;
@@ -65,16 +54,14 @@ RGBColor operator*(const float a) const
     return temp;
 }
 
-RGBColor &operator*=(const float a)
-{
-    RGBColor temp;
-    temp.r = temp.r * a;
-    temp.g = temp.g * a;
-    temp.b = temp.b * a;
-    return temp;
+RGBColor& RGBColor::operator*=(const float a){
+    r *= a;
+    g *= a;
+    b *= a;
+    return *this;
 }
 
-RGBColor operator/(const float a) const
+RGBColor RGBColor::operator/(const float a) const
 {
     RGBColor temp;
     temp.r = r / a;
@@ -83,33 +70,22 @@ RGBColor operator/(const float a) const
     return temp;
 }
 
-RGBColor &operator/=(const float a)
-{
-    RGBColor temp;
-    temp.r = temp.r / a;
-    temp.g = temp.g / a;
-    temp.b = temp.b / a;
-    return temp;    
+RGBColor& RGBColor::operator/=(const float a){
+    r /= a;
+    g /= a;
+    b /= a;
+    return *this;
 }
 
-RGBColor operator*(const RGBColor &c) const
-{
-    c.r = r * c.r;
-    c.g = g * c.g;
-    c.b = b * c.b;
-    return c;  
+RGBColor RGBColor::operator*(const RGBColor &c) const{
+    return RGBColor(r*c.r, g*c.g, b*c.b);
 }
 
-bool operator==(const RGBColor &c) const
-{
-    if (c.r == r) && (c.g == g) && (c.b == b)
-    {
-        return true;
-    }
-    return false;
+bool RGBColor::operator==(const RGBColor &c) const{
+    return (r == c.r && g == c.g && b == c.b);
 }
 
-RGBColor powc(float p) const
+RGBColor RGBColor :: powc(float p) const
 {
     RGBColor temp;
     temp.r = pow(temp.r, p);
@@ -118,15 +94,11 @@ RGBColor powc(float p) const
     return temp;
 }
 
-float average() const
+float RGBColor:: average() const
 {
     return (r + g + b)/3;
 }
 
-RGBColor operator*(const float a, const RGBColor &c)
-{
-    c.r = c.r * a;
-    c.g = c.g * a;
-    c.b = c.b * a;
-    return c;
+RGBColor operator*(const float a, const RGBColor &c){
+    return RGBColor(a*c.r, a*c.g, a*c.b);
 }
