@@ -43,7 +43,7 @@ ShadeInfo World :: hit_objects(const Ray& ray){
         }
     }
     if (s.hit){
-        s.normal = normal;
+        s.normal = n;
         s.t = t_min;
         s.hit_point = p;
     }
