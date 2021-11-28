@@ -33,7 +33,7 @@ ShadeInfo World :: hit_objects(const Ray& ray){
     Vector3D n;
     Point3D p;
 
-    for (int i = 0; i < geometry.size(); i++){
+    for (unsigned int i = 0; i < geometry.size(); i++){
         if (geometry[i]->hit(ray, t, s) && (t < t_min)){
             s.hit = true;
             s.material_ptr = geometry[i]->get_material();
