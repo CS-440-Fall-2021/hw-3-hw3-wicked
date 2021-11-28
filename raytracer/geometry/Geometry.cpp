@@ -1,8 +1,5 @@
-#include <iostream>
+#include "../materials/Material.hpp"
 #include "Geometry.hpp"
-#include "Ray.hpp"
-#include "BBox.hpp"
-
 
 Geometry::Geometry()
 {
@@ -18,7 +15,8 @@ void Geometry::set_material(Material *mPtr)
 {
     if (material_ptr != NULL)
     {
-        delete material_ptr;
+        material_ptr = nullptr;
     }
     material_ptr = mPtr;
 }
+
