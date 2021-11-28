@@ -1,10 +1,12 @@
 #include "BBox.hpp"
+#include "Ray.hpp"
+#include "Constants.hpp"
+#include "../geometry/Geometry.hpp"
+#include <string>
 
-BBox::BBox(const Point3D& min, const Point3D& max)
-{
-    pmin(min.x, min.y, min.z);
-    pmax(max.x, max.y, max.z);
-}
+
+BBox::BBox(const Point3D& min, const Point3D& max): pmin(min), pmax(max) {}
+
 
 std::string BBox::to_string() const
 {
@@ -69,16 +71,15 @@ bool BBox::hit(const Ray &ray, float &t_enter, float &t_exit) const
 }
 
 void BBox::extend(Geometry* g)
-{
-    BBox temp = g.getBBox()
-    pmin = std::min(temp.pmin, pmin);
-    pmax = std::max(temp.pmax, pmax); 
+{   
+    this->pmin = min(g->getBBox().pmin, pmin);
+    this->pmax = max(g->getBBox().pmax, pmax);
 }
 
 void BBox::extend(const BBox& b)
 {
-    pmin = std::min(b.pmin, pmin);
-    pmax = std::max(b.pmax, pmax);
+    this->pmin = min(b.pmin, pmin);
+    this->pmax = max(b.pmax, pmax);
 }
 
 bool BBox::contains(const Point3D& p)
@@ -102,66 +103,17 @@ bool BBox::contains(const Point3D& p)
         return true;
     }
 
-    //zmax
-    if ((p.z == pmax.z) && (p.y <= pmax.y && p.y >= pmin.y) && (p.x <= pmax.x && p.x >= pmin.x))
-    {
-        return true;
-    }
-    // zmin
-    if ((p.z == pmin.z) && (p.y <= pmax.y && p.y >= pmin.y) && (p.x <= pmax.x && p.x >= pmin.x))
-    {
-        return true;
-    }
-    // ymax
-    if ((p.y == pmax.y) && (p.z <= pmax.z && p.z >= pmin.z) && (p.x <= pmax.x && p.x >= pmin.x))
-    {
-        return true;
-    }
-    //ymin
-    if ((p.y == pmin.y) && (p.z <= pmax.z && p.z >= pmin.z) && (p.x <= pmax.x && p.x >= pmin.x))
-    {
-        return true;
-    }
-    // xmax
-    if ((p.x == pmax.x) && (p.z <= pmax.z && p.z >= pmin.z) && (p.y <= pmax.y && p.y >= pmin.y))
-    {
-        return true;
-    }
-    //ymin
-    if ((p.x == pmin.x) && (p.z <= pmax.z && p.z >= pmin.z) && (p.y <= pmax.y && p.y >= pmin.y))
-    {
-        return true;
-    }
     return false;
 }
 
 bool BBox::overlaps(Geometry* g)
 {
-    BBox temp = g.getBBox();
-    Point3D p1 = temp.pmin;
-    Point3D p2 = temp.pmax;
-    // 4 corners
-    if (contains(p1))
-    {
-        return true;
-    }
-    if (contains(p2))
-    {
-        return true;
-    }
-    return false;
+    BBox temp = g->getBBox();
+    return ((pmax.x > temp.pmin.x) && (pmax.y > temp.pmin.y) && (pmax.z > temp.pmin.z));
 
 }
 
 bool BBox::overlaps(const BBox& b)
 {
-    if (contains(b.pmin))
-    {
-        return true;
-    }
-    if (contains(b.pmax))
-    {
-        return true;
-    }
-    return false;
+    return ((pmax.x > b.pmin.x) && (pmax.y > b.pmin.y) && (pmax.z > b.pmin.z));
 }
