@@ -1,55 +1,67 @@
 #include "Image.hpp"
-#include "ViewPlane.hpp"
+#include "../world/ViewPlane.hpp"
+#include "RGBColor.hpp"
 #include <fstream>
-#include <cstdio>
+#include <iostream>
+// #include <cstdio>
 
-Image(int hres, int vres)
+Image::Image(int hres, int vres)
 {
-    hres = hres;
-    vres = vres;
+    this->hres = hres;
+    this->vres = vres;
+    colors = new RGBColor*[vres];
+    for (int i=0; i<(hres); i++)
+        colors[i] = new RGBColor[hres];
+
 }
 
-Image(const ViewPlane &vp)
+Image :: Image(const ViewPlane &vp)
 {
-    vp.hres = hres;
-    vp.vres = vres;
+    hres = vp.hres;
+    vres = vp.vres;
+    colors = new RGBColor*[vres];
+    for (int i=0; i<(hres); i++)
+        colors[i] = new RGBColor[hres];
 }
 
-~Image()
+Image::~Image()
 {
-    delete colors;
-    delete hres;
-    delete vres;
+   for (int i = 0; i < hres; i++)
+        delete[] colors[i];
+    delete[] colors;
 }
 
-void set_pixel(int x, int y, const RGBColor& color)
+void Image :: set_pixel(int x, int y, const RGBColor& color)
 {
     colors[y][x] = color;
 }
 
-void write_ppm(std::string path) const
+void Image :: write_ppm(std::string path) const
 {
-    // adapted from book
-    float max = 0;
-    for (int r = 0; r < vres; ++r)
+    float _max = 0;
+    for (int i = 0; i < vres; ++i)
     {
-        for (int c=0; c < hres; ++c)
+        for (int j=0; j < hres; ++j)
         {
-            max = std::max(colors[r][c].r std::max(colors[r][c].g, std::max(colors[r][c].b, max)));
+            _max = std::max(colors[i][j].r,std::max(colors[i][j].g, std::max(colors[i][j].b, _max)));
         }
     }
 
-    std::ofstream ofs(path);
-    ofs << "P3" << endl << hres << " " << vres << endl << "255" << endl;
+    std::ofstream file(path);
+    file << "P3" << '\n';
+    file << hres << " " << vres << '\n';
+    file << 255 << '\n';
 
-    float scale = 255.0/max;
-    for (auto j=0; j<vres; ++j)
+    double scale = 255/_max;
+    for(int i = 0; i < vres; i++) 
     {
-        for (auto i=0; i <hres; ++i)
+        for(int j = 0; j < hres; j++)
         {
-            ofs << static_cast<int>(colors[j][i].r * scale) << " " << static_cast<int>(colors[j][i].g * scale) << " " << static_cast<int>(colors[j][i].b * scale);
+            file << static_cast<int>(colors[i][j].r*scale) << " " <<
+            static_cast<int>(colors[i][j].g*scale) << " " <<
+            static_cast<int>(colors[i][j].b*scale) << " "; 
         }
-        ofs << endl;
+        file << '\n';
     }
-    ofs.close();
+    file.close();
 }
