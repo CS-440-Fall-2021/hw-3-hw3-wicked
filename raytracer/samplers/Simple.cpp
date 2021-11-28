@@ -2,10 +2,23 @@
 #include "../utilities/Ray.hpp"
 #include "../world/ViewPlane.hpp"
 #include "Simple.hpp"
+#include <iostream>
 
-Simple::Simple (Camera *c_ptr, ViewPlane *v_ptr): camera_ptr(c_ptr), viewplane_ptr(v_ptr) {}
+Simple::Simple (Camera *c_ptr, ViewPlane *v_ptr) {
+    this->camera_ptr = c_ptr;
+    this->viewplane_ptr = v_ptr;
+}
 
-Simple::Simple (const Simple &camera): camera_ptr(camera.camera_ptr), viewplane_ptr(camera.viewplane_ptr) {}
+Simple::Simple (const Simple &camera) {
+    this->camera_ptr = camera.camera_ptr;
+    this->viewplane_ptr = camera.viewplane_ptr;
+}
+
+Simple& Simple::operator=(const Simple& other) {
+    this->camera_ptr = other.camera_ptr;
+    this->viewplane_ptr = other.viewplane_ptr;
+    return *this;
+}
 
 std::vector<Ray> Simple::get_rays(int px, int py) const {
     std::vector<Ray> rays;
@@ -21,7 +34,7 @@ std::vector<Ray> Simple::get_rays(int px, int py) const {
     ray.o = p; 
     ray.d = camera_ptr->get_direction(p);
     ray.d.normalize();
-    rays.push_back(r);
+    rays.push_back(ray);
     return rays;
 
 
